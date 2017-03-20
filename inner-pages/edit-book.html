@@ -1,0 +1,49 @@
+<md-dialog aria-label="Edit Book">
+  <form ng-cloak>
+    <md-toolbar>
+      <div class="md-toolbar-tools">
+        <h2>Edit Book</h2>
+        <span flex></span>
+        <md-button class="md-icon-button" ng-click="cancel()" aria-label="Close">
+        </md-button>
+      </div>
+    </md-toolbar>
+
+    <md-dialog-content>
+      <div class="md-dialog-content">
+          <div class="col-xs-9">
+                <input type="text" placeholder="Title" class="form-control input col-md-5 edit" size="16" ng-model="Title" my-enter="saveBook()" >
+                <input type="text" placeholder="Autuor" class="form-control edit" ng-model="Autuor" my-enter="saveBook()">
+                <input type="text" placeholder="ImageUrl" class="form-control edit" ng-model="Cover" my-enter="saveBook()">
+                <div class="form-group">
+                    <md-datepicker  ng-model="myDate" 
+                                    md-mode="month" 
+                                    md-placeholder="Enter date" 
+                                    md-open-on-focus
+                                    md-current-view="month"
+                                    md-date-locale="dateFields.locale">
+                    </md-datepicker>
+                </div>
+            </div>
+            <div class="col-xs-3">
+                <div>
+                    <img ng-src="{{Cover}}" class="img-responsive img-rounded img-thumbnail cover-image edit">
+                </div>
+            </div>
+            
+      </div>
+    </md-dialog-content>
+   
+
+    <md-dialog-actions layout="row">
+        <md-button ng-click="answer('test')" aria-label="Close">
+            <span class="saveBtn">{{saveError}}</span>
+            {{saveBtn}}
+        </md-button>
+        <span flex></span>
+        <md-button ng-click="cancel()" aria-label="Close">
+            {{cancelBtn}}
+        </md-button>
+    </md-dialog-actions>
+  </form>
+</md-dialog>

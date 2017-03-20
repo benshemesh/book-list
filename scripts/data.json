@@ -1,0 +1,69 @@
+[
+    {
+    "Title": "anna karenina",
+	"Autuor": "Leo Tolstoy",
+	"Date": {
+		"Month": "January",
+		"Year": "1983"
+
+	},
+	"Cover": "http://ecx.images-amazon.com/images/I/51vPf2CfSEL._SL160_.jpg"
+
+}, {
+    "Title": "Madame Bovary",
+	"Autuor": "Gustave Flaubert",
+	"Date": {
+		"Month": "JUNE",
+		"Year": "1985"
+	},
+	"Cover": "http://ecx.images-amazon.com/images/I/51o5dnjk07L._SL160_.jpg"
+}, {
+    "Title": "War and Peace",
+	"Autuor": "Leo Tolstoy",
+	"Date": {
+		"Month": "JULY",
+		"Year": "1987"
+	},
+	"Cover": "https://images-na.ssl-images-amazon.com/images/I/510UE7bvHoL._SL160_.jpg"
+}, {
+    "Title": "The Great Gatsby",
+	"Autuor": "F. Scott Fitzgerald",
+	"Date": {
+		"Month": "JULY",
+		"Year": "1980"
+	},
+	"Cover": "https://images-na.ssl-images-amazon.com/images/I/51khWutZqCL._SL160_.jpg"
+},{
+    "Title": "Lolita",
+	"Autuor": "Vladimir Nabokov",
+	"Date": {
+		"Month": "MARCH",
+		"Year": "1980"
+	},
+	"Cover": "https://images-na.ssl-images-amazon.com/images/I/41s2G6WxLvL._SL160_.jpg"
+}, {
+	"Title": "Middlemarch",
+	"Autuor": "George Eliot",
+	"Date": {
+		"Month": "February",
+		"Year": "1980"
+	},
+	"Cover": "http://ecx.images-amazon.com/images/I/51eRjEMiOgL._SL160_.jpg"
+}, {
+	"Title": "The Adventures of Huckleberry Finn",
+	"Autuor": "Mark Twain",
+	"Date": {
+		"Month": "MARCH",
+		"Year": "1980"
+	},
+	"Cover": "http://ecx.images-amazon.com/images/I/51Ht1M-GPXL._SL160_.jpg"
+}, {
+	"Title": "The Stories of Anton Chekhov",
+	"Autuor": "Anton Chekhov",
+	"Date": {
+		"Month": "SEPTEMBER",
+		"Year": "1980"
+	},
+	"Cover": "https://images-na.ssl-images-amazon.com/images/I/51Hw4%2BqGKFL._SL160_.jpg"
+}
+]

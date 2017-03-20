@@ -1,0 +1,62 @@
+<nav class="navbar navbar-default">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="">BookList</a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li class="dropdown">
+                    <a href="/" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> <span class="glyphicon glyphicon-sort"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="" ng-click="sortBy('Title')">Title</a></li>
+                        <li><a href="" ng-click="sortBy('Autuor')">Autuor</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="" ng-click="reset()">Reset</a></li>
+                        <li><a href="" ng-click="fetch()">Fetch</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <form class="navbar-form navbar-left">
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="search" ng-model="searchText">
+                </div>
+            </form>
+        </div>
+    </div>
+</nav>
+<div class="container">
+    <div class="row content single-book" >
+        <div class="col-md-3 col-sm-4 col-xs-6 col-xxs-12 book list-group list-group" ng-repeat="book in NewBooks | orderBy:propertyName:reverse | filter: search" >
+            <div class="list-group-item  navbar-default col-xs-12 delBtn">
+                <div class="row">
+                    <md-button class="col-md-1 col-md-push-8 col-xs-1 col-xs-push-8 " ng-click="removeBook($event, book.Title)" aria-label="Close">
+                        <a href="" class="glyphicon glyphicon-remove edit" ></a>
+                    </md-button>
+                </div>
+            </div>
+            <div class="list-group-item col-xs-12">
+                <md-button class="" ng-click="editBook($event, book.Title)" aria-label="Close">
+                    <div class="col-xs-12">
+                        <fit-image image="{{ book.Cover }}" class="img-responsive img-rounded img-thumbnail cover-image">
+                    </div>
+                    <div class="col-xs-12 book-content">
+                        <span class="title">{{book.Title | capitalize | limitTo:letterLimit}}</span><br>
+                        {{book.Autuor}}<br>
+                        <span class="date">{{book.Date.Year}}</span>
+                    </div>
+                </md-button>
+            </div>
+        </div>
+    </div>
+</div>
+   
+       
+            
+            
+            
+            
