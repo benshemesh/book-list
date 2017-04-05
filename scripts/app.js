@@ -1,6 +1,6 @@
 var app = angular.module('mainApp', ['ngMaterial', 'ngMessages', 'ngSanitize', 'ngRoute'])
 
-.config(function($routeProvider) {
+.config(function($routeProvider, $mdThemingProvider) {
     $routeProvider
     .when("/", {
         templateUrl : "inner-pages/books-template.html",
@@ -8,7 +8,7 @@ var app = angular.module('mainApp', ['ngMaterial', 'ngMessages', 'ngSanitize', '
         resolve: {
              bookListData: function($http, $q){
                 var whenReady = $q.defer();
-                var dataURL = 'http://localhost/ateam/scripts/data.json';
+                var dataURL = 'scripts/data.json';
                 $http.get(dataURL)
                     .success(function (data) {
                         whenReady.resolve(data);
@@ -18,6 +18,9 @@ var app = angular.module('mainApp', ['ngMaterial', 'ngMessages', 'ngSanitize', '
             
          }
      })
+    $mdThemingProvider.theme('default')
+      .primaryPalette('pink')
+      .accentPalette('red');
 })
 
 
@@ -30,23 +33,101 @@ var app = angular.module('mainApp', ['ngMaterial', 'ngMessages', 'ngSanitize', '
     $scope.lastSaved = angular.copy($scope.NewBooks); //to fetch
     
     
-/*Edit book */
-    $scope.editBook = function(ev, bookName) {
-        
-        $mdDialog.saveBook = function(Title, Autuor, Cover, date,  Location){ 
+/*Toolbar*/
+    $scope.sortBy = function(propertyName) {
+        $scope.reverse = ($scope.propertyName === propertyName) ? !$scope.reverse : false;
+        $scope.propertyName = propertyName;
+    };
+    $scope.sortBy("Title");
+    
+    
+    $scope.fetch = function(){
+         $scope.NewBooks = angular.copy($scope.lastSaved);
+    }
+    $scope.reset = function(){
+        $scope.NewBooks =angular.copy($scope.allBooks);
+    }
+    
+/*End Toolbar*/ 
+    
+    
+    
+    $mdDialog.saveBook = function(Title, Autuor, Cover, date,  Location){ 
+            
             $scope.Title = Title;
             $scope.Autuor = Autuor;
             $scope.Cover = Cover;
             $scope.myDate = date;
             $scope.bookLocation = Location;
+            console.log($scope.monthNames[$scope.myDate.getMonth()]);
             $scope.saveBook();
-        }
+    };
+    
+    $scope.saveBook = function(){   
         
+            if ($mdDialog.status == "edit"){
+                $scope.NewBooks[$scope.bookLocation].Title = $scope.Title;
+                $scope.NewBooks[$scope.bookLocation].Autuor = $scope.Autuor;
+                $scope.NewBooks[$scope.bookLocation].Cover = $scope.Cover;
+                $scope.NewBooks[$scope.bookLocation].Date.Month = $scope.monthNames[$scope.myDate.getMonth()];
+                $scope.NewBooks[$scope.bookLocation].Date.Year = $scope.myDate.getFullYear();
+            }
+        
+            else{
+               $scope.NewBooks.push({
+                    "Title" : $scope.Title,
+                    "Autuor" : $scope.Autuor,
+                    "Cover" : $scope.Cover,
+                    "Date" : {
+                        "Month" : $scope.monthNames[$scope.myDate.getMonth()],
+                        "Year" : $scope.myDate.getFullYear()
+                    }
+                })
+            }
+            $scope.lastSaved = angular.copy($scope.NewBooks);
+    };
+
+     
+    
+
+    
+
+/*limit Filter*/
+  $scope.letterLimit = 24;
+    $scope.search = function (item) { 
+        if ($scope.searchText == undefined) {
+            return true; 
+        }
+        else {
+            if (item.Title.toLowerCase().indexOf($scope.searchText.toLowerCase()) != -1 ||
+                item.Autuor.toLowerCase().indexOf($scope.searchText.toLowerCase()) != -1) {
+                return true; 
+            } 
+        } return false; 
+} 
+    
+
+    $scope.windowWidth = $( window ).width();
+    
+    if($scope.windowWidth< 480){
+        $scope.letterLimit = 18;
+    }
+    else{
+        $scope.letterLimit = 24;
+    }
+    
+/*end limit Filter*/
+
+    
+    
+/*Edit book */
+    $scope.editBook = function(ev, bookName) {
+        $mdDialog.status = "edit";
         $mdDialog.editBooks = $scope.NewBooks;
         $mdDialog.editBookTitle = bookName;
         $mdDialog.show({
-          controller: DialogController,
-          templateUrl: 'inner-pages/edit-book.html',
+          controller: AddEditController,
+          templateUrl: 'inner-pages/book.html',
           parent: angular.element(document.body),
           targetEvent: ev,
           clickOutsideToClose:true,
@@ -54,87 +135,24 @@ var app = angular.module('mainApp', ['ngMaterial', 'ngMessages', 'ngSanitize', '
         })
     };
     
-    function DialogController($scope, $mdDialog, $timeout) {
-        $scope.Books =  $mdDialog.editBooks;
-        $scope.Title = $mdDialog.editBookTitle;
-        $scope.saveBtn="Save";
-        $scope.cancelBtn = "Cancel"
-        for(i=0; i<$scope.Books.length; i++){
-            if ($scope.Books[i].Title == $scope.Title){
-                $scope.Autuor= $scope.Books[i].Autuor;
-                $scope.Cover =  $scope.Books[i].Cover;
-                $scope.myDate = new Date($scope.Books[i].Date.Month+","+ $scope.Books[i].Date.Year);
-                $scope.BookLocation = i;
-            }
-            
-        }
-        
-        /*Date dialog*/
-        function buildLocaleProvider(formatString) {
-            return {
-            formatDate: function (date) {
-                if (date) return moment(date).format(formatString);
-                else return null;
-                    },
-                    parseDate: function (dateString) {
-                        if (dateString) {
-                            var m = moment(dateString, formatString, true);
-                            return m.isValid() ? m.toDate() : new Date(NaN);
-                        }
-                        else return null;
-                    }
-                };
-            }
-
-        $scope.dateFields ={ mode: 'month',locale:  buildLocaleProvider("MMM-YYYY")};
-        /*end Date dialog*/
-        
-        $scope.hide = function() {
-          $mdDialog.hide();
-        };
-
-        $scope.cancel = function() {
-          $mdDialog.cancel();
-        };
-
-        $scope.answer = function(answer) {
-            if(!$scope.Title || !$scope.Autuor || !$scope.Cover){
-                $scope.saveError="All fileds are requierd";
-                $scope.saveBtn="";
-                $scope.cancelBtn="";
-                $timeout(function(){
-                    $scope.saveError =""
-                    $scope.saveBtn="Save";
-                    $scope.cancelBtn="Cancel";
-                }, 4000)
-                
-            }
-            else{
-                $mdDialog.hide();
-                $mdDialog.saveBook($scope.Title, $scope.Autuor, $scope.Cover, $scope.myDate, $scope.BookLocation)
-            }
-        };
-  };
-    
-    
-    $scope.monthNames = ["January", "February", "March", "April", "May", "June",
-                  "July", "August", "September", "October", "November", "December"
-        ];
-    $scope.saveBook = function(){
-            $scope.NewBooks[$scope.bookLocation].Title = $scope.Title;
-            $scope.NewBooks[$scope.bookLocation].Autuor = $scope.Autuor;
-            $scope.NewBooks[$scope.bookLocation].Cover = $scope.Cover;
-            $scope.NewBooks[$scope.bookLocation].Date.Month = $scope.monthNames[$scope.myDate.getMonth()];
-            $scope.NewBooks[$scope.bookLocation].Date.Year = $scope.myDate.getFullYear();
-            $scope.lastSaved = angular.copy($scope.NewBooks);
-        };
-/*End Edit boook */
+/*add boook */
+    $scope.addBook = function(ev) {
+        $mdDialog.status = "add";
+        $mdDialog.show({
+            controller: AddEditController,
+            templateUrl: 'inner-pages/book.html',
+            parent: angular.element(document.body),
+            targetEvent: ev,
+            clickOutsideToClose:true,
+            fullscreen: $scope.customFullscreen 
+        })
+    };
     
 /*remove book*/
     $scope.removeBook = function(ev, bookName) {
         var confirm = $mdDialog.confirm()
               .title('Book Delete')
-              .textContent('Please confirm you want to delete the book')
+              .textContent(bookName)
               .targetEvent(ev)
               .ok('OK')
               .cancel('cancel');
@@ -149,42 +167,94 @@ var app = angular.module('mainApp', ['ngMaterial', 'ngMessages', 'ngSanitize', '
             
         });
     };
-/*end remove book*/
     
-/*Toolbar*/
-    $scope.sortBy = function(propertyName) {
-        $scope.reverse = ($scope.propertyName === propertyName) ? !$scope.reverse : false;
-         $scope.propertyName = propertyName;
+    
+     $scope.monthNames = ["January", "February", "March", "April", "May", "June",
+                      "July", "August", "September", "October", "November", "December"
+            ];
+    
+    
+    function AddEditController($scope, $mdDialog, $timeout) {
+        $scope.status=$mdDialog.status;
+        
+            /*check if Edit Or Add function*/
+            if ($mdDialog.status == "edit"){
+                $scope.Books =  $mdDialog.editBooks;
+                $scope.Title = $mdDialog.editBookTitle;
+                for(i=0; i<$scope.Books.length; i++){
+                    if ($scope.Books[i].Title == $scope.Title){
+                        $scope.Autuor= $scope.Books[i].Autuor;
+                        $scope.Cover =  $scope.Books[i].Cover;
+                        $scope.myDate = new Date($scope.Books[i].Date.Month+","+ $scope.Books[i].Date.Year);
+                        $scope.BookLocation = i;
+                    }
+                }
+            }
+            else{
+                $scope.myDate = new Date(0);
+            }
+
+
+            $scope.saveBtn="Save";
+            $scope.cancelBtn = "Cancel";
+
+
+            /*Date dialog*/
+           
+
+
+            function buildLocaleProvider(formatString) {
+                return {
+                formatDate: function (date) {
+                    if (date) return moment(date).format(formatString);
+                    else return null;
+                    },
+                    parseDate: function (dateString) {
+                        if (dateString) {
+                            var m = moment(dateString, formatString, true);
+                            return m.isValid() ? m.toDate() : new Date(NaN);
+                        }
+                        else return null;
+                    }
+                };
+            }
+
+            $scope.dateFields ={ mode: 'month',locale:  buildLocaleProvider("MMM-YYYY")};
+            /*end Date dialog*/
+
+
+            $scope.hide = function() {
+              $mdDialog.hide();
+            };
+
+            $scope.cancel = function() {
+              $mdDialog.cancel();
+            };
+
+
+            $scope.answer = function(answer) {
+                
+                if(!$scope.Title || !$scope.Autuor || !$scope.Cover){
+                    $scope.saveError="All fileds requierd";
+                    $scope.saveBtn="";
+                    $scope.cancelBtn="";
+                    $timeout(function(){
+                        $scope.saveError =""
+                        $scope.saveBtn="Save";
+                        $scope.cancelBtn="Cancel";
+                    }, 3000)
+
+                }
+                else{
+                   
+                    $mdDialog.hide();
+                    $mdDialog.saveBook($scope.Title, $scope.Autuor, $scope.Cover, $scope.myDate, $scope.BookLocation)
+                }
+            };
     };
-    $scope.sortBy("Title");
+        
     
     
-    $scope.fetch = function(){
-         $scope.NewBooks = angular.copy($scope.lastSaved);
-    }
-    $scope.reset = function(){
-        $scope.NewBooks =angular.copy($scope.allBooks);
-    }
-    
-    
-    
-    $scope.letterLimit = 24;
-    $scope.search = function (item) { 
-        if ($scope.searchText == undefined) {
-            return true; 
-        }
-        else {
-            if (item.Title.toLowerCase().indexOf($scope.searchText.toLowerCase()) != -1 ||
-                //item.Date.Year.toLowerCase().indexOf($scope.searchText.toLowerCase()) != -1 ||
-                item.Autuor.toLowerCase().indexOf($scope.searchText.toLowerCase()) != -1) {
-                return true; 
-            } 
-        } return false; 
-    } 
-    
-/*end Toolbar*/
-      
-  
 })
 
 
@@ -240,5 +310,11 @@ var app = angular.module('mainApp', ['ngMaterial', 'ngMessages', 'ngSanitize', '
     }
 });
 
+
+/*Jquery*/
+
+function changeBtn(x) {
+    x.classList.toggle("change");
+}
 
 

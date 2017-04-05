@@ -1,0 +1,59 @@
+<md-dialog aria-label="Edit Book" class="book">
+  <form ng-cloak>
+    <md-toolbar>
+      <div class="md-toolbar-tools">
+        <h2>{{status}} book</h2>
+        <span flex></span>
+        <md-button class="md-icon-button" ng-click="cancel()" aria-label="Close">
+        </md-button>
+      </div>
+    </md-toolbar>
+
+    <md-dialog-content>
+      <div class="md-dialog-content">
+          <div class="col-xs-9">
+              <md-input-container flex class="col-md-12 input-box"> 
+                    <label>Title</label>
+                    <input type="text" ng-model="Title" my-enter="saveBook()" autofocus />
+                </md-input-container>
+                <md-input-container flex class="col-md-12 input-box"> 
+                    <label>Autuor</label>
+                    <input type="text" ng-model="Autuor" my-enter="saveBook()" />
+                </md-input-container>
+              <md-input-container flex class="col-md-12 input-box"> 
+                    <label>Cover Image URL</label>
+                    <input type="text" ng-model="Cover" my-enter="saveBook()" />
+                </md-input-container>
+                <div class="form-group">
+                    <md-datepicker  ng-model="myDate" 
+                                    md-mode="month" 
+                                    md-placeholder="Enter date" 
+                                    md-open-on-focus
+                                    md-current-view="month"
+                                    md-date-locale="dateFields.locale">
+                    </md-datepicker>
+                </div>
+            </div>
+            <div class="col-xs-3">
+                <div>
+                    <img ng-src="{{Cover}}" class="img-responsive img-rounded img-thumbnail cover-image edit">
+                </div>
+            </div>
+            
+      </div>
+    </md-dialog-content>
+   
+
+    <md-dialog-actions layout="row">
+        <md-button ng-click="answer()" aria-label="Close">
+            <span class="saveBtn">{{saveError}}</span>
+            {{saveBtn}}
+        </md-button>
+        
+        <span flex></span>
+        <md-button ng-click="cancel()" aria-label="Close">
+            {{cancelBtn}}
+        </md-button>
+    </md-dialog-actions>
+  </form>
+</md-dialog>

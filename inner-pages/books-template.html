@@ -1,7 +1,10 @@
-<nav class="navbar navbar-default">
+
+
+
+<nav class="navbar navbar-default ">
     <div class="container">
         <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false" onclick="changeBtn(this)">
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
@@ -29,20 +32,21 @@
         </div>
     </div>
 </nav>
+
 <div class="container">
     <div class="row content single-book" >
         <div class="col-md-3 col-sm-4 col-xs-6 col-xxs-12 book list-group list-group" ng-repeat="book in NewBooks | orderBy:propertyName:reverse | filter: search" >
             <div class="list-group-item  navbar-default col-xs-12 delBtn">
-                <div class="row">
-                    <md-button class="col-md-1 col-md-push-8 col-xs-1 col-xs-push-8 " ng-click="removeBook($event, book.Title)" aria-label="Close">
+                <div class="row row-remove">
+                    <md-button class="col-md-1 col-md-push-10 col-xs-1 col-xs-push-10 action" ng-click="removeBook($event, book.Title)" aria-label="Close">
                         <a href="" class="glyphicon glyphicon-remove edit" ></a>
                     </md-button>
                 </div>
             </div>
             <div class="list-group-item col-xs-12">
-                <md-button class="" ng-click="editBook($event, book.Title)" aria-label="Close">
+                <md-button class="book-info" ng-click="editBook($event, book.Title)" aria-label="Close" >
                     <div class="col-xs-12">
-                        <fit-image image="{{ book.Cover }}" class="img-responsive img-rounded img-thumbnail cover-image">
+                        <fit-image image="{{ book.Cover }}" class="img-responsive img-rounded img-thumbnail cover-image"></fit-image>
                     </div>
                     <div class="col-xs-12 book-content">
                         <span class="title">{{book.Title | capitalize | limitTo:letterLimit}}</span><br>
@@ -54,6 +58,9 @@
         </div>
     </div>
 </div>
+<md-button class="md-fab md-fab-bottom-right md-primary" ng-click="addBook($event)">
+    <span class="glyphicon glyphicon-plus"></span>
+</md-button>
    
        
             
